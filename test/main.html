@@ -6,6 +6,9 @@
 
 </head>
 <body>
+
+<button href="javascript:;" onclick="run();" class="scanDevices">Scan</button>
+
 <script>
 
     navigator.bluetooth.requestDevice({ filters: [{ services: ['battery_service'] }] })
