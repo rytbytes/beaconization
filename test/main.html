@@ -33,6 +33,38 @@
 document.write(error);
 console.log(error); });
 
+function recordNearbyBeacon(major, minor, pathLossVs1m) { ... }
+let myBeaconUuid = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
+
+navigator.bluetooth.requestLEScan({
+  filters: [{manufacturerId: 0x004C}],
+  options: {
+    keepRepeatedDevices: true,
+  }
+}).then(() => {
+  navigator.bluetooth.addEventListener('advertisementreceived', event => {
+    let appleData = event.manufacturerData.get(0x004C);
+    if (appleData.byteLength != 23 ||
+        appleData.getUint16(0, false) !== 0x0215) {
+      // Isn’t an iBeacon.
+      return;
+    }
+    let uuidArray = new Uint8Array(appleData.buffer, 2, 16);
+    for (let i = 0; i < 16; i++) {
+      if (uuidArray[i] != myBeaconUuid[i]) {
+        // Not my class of beacon.
+        return;
+      }
+    }
+    let major = appleData.getUint16(18, false);
+    let minor = appleData.getUint16(20, false);
+    let txPowerAt1m = -appleData.getInt8(22);
+    let pathLossVs1m = txPowerAt1m - event.rssi;
+
+    recordNearbyBeacon(major, minor, pathLossVs1m);
+  });
+})
+
 </script>
 </body>
 </html>
