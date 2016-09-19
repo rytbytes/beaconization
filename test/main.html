@@ -10,7 +10,7 @@
 <button onclick="run();" class="scanDevices">Scan</button>
 
 <script>
-
+    function onButtonClick() {
     navigator.bluetooth.requestDevice({ filters: [{ services: ['battery_service'] }] })
 .then(device => device.gatt.connect())
 .then(server => {
@@ -64,6 +64,7 @@ navigator.bluetooth.requestLEScan({
     recordNearbyBeacon(major, minor, pathLossVs1m);
   });
 })
+}
 
 </script>
 </body>
