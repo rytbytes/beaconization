@@ -7,96 +7,25 @@
 </head>
 <body>
 <form>
-<button class="scanDevices">Scan</button>
+<button class="scanDevices" id="test" onclick="test()">Scan</button>
 </form>
 <script>
-    function onButtonClick() {
-    navigator.bluetooth.requestDevice({ filters: [{ services: ['battery_service'] }] })
+
+function test(){
+
+navigator.bluetooth.requestDevice({ filters: [{ services: ['battery_service'] }] })
 .then(device => device.gatt.connect())
-.then(server => {
-  // Getting Battery Service...
-  return server.getPrimaryService('battery_service');
-})
-.then(service => {
-  // Getting Battery Level Characteristic...
-  return service.getCharacteristic('battery_level');
-})
+.then(server => server.getPrimaryService('battery_service'))
+.then(service => service.getCharacteristic('battery_level'))
 .then(characteristic => {
-  // Reading Battery Level...
-  return characteristic.readValue();
+  return characteristic.readValue()
+    .then(value => {
+       // Before..
+       console.log('Battery percentage is ' + value.getUint8(0));
+       // Now...
+       console.log('Battery percentage is ' + characteristic.getUint8Value(0));
+    })
 })
-.then(value => {
-    document.write('Battery percentage is ' + value.getUint8(0));
-  console.log('Battery percentage is ' + value.getUint8(0));
-})
-.catch(error => {
-document.write(error);
-console.log(error); });
-
-function recordNearbyBeacon(major, minor, pathLossVs1m) { ... }
-let myBeaconUuid = new Uint8Array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
-
-navigator.bluetooth.requestLEScan({
-  filters: [{manufacturerId: 0x004C}],
-  options: {
-    keepRepeatedDevices: true,
-  }
-}).then(() => {
-  navigator.bluetooth.addEventListener('advertisementreceived', event => {
-    let appleData = event.manufacturerData.get(0x004C);
-    if (appleData.byteLength != 23 ||
-        appleData.getUint16(0, false) !== 0x0215) {
-      // Isn’t an iBeacon.
-      return;
-    }
-    let uuidArray = new Uint8Array(appleData.buffer, 2, 16);
-    for (let i = 0; i < 16; i++) {
-      if (uuidArray[i] != myBeaconUuid[i]) {
-        // Not my class of beacon.
-        return;
-      }
-    }
-    let major = appleData.getUint16(18, false);
-    let minor = appleData.getUint16(20, false);
-    let txPowerAt1m = -appleData.getInt8(22);
-    let pathLossVs1m = txPowerAt1m - event.rssi;
-
-    recordNearbyBeacon(major, minor, pathLossVs1m);
-  });
-})
-
-  let filters = [];
-
-  let filterService = document.querySelector('#service').value;
-  if (filterService.startsWith('0x')) {
-    filterService = parseInt(filterService);
-  }
-  if (filterService) {
-    filters.push({services: [filterService]});
-  }
-
-  let filterName = document.querySelector('#name').value;
-  if (filterName) {
-    filters.push({name: filterName});
-  }
-
-  let filterNamePrefix = document.querySelector('#namePrefix').value;
-  if (filterNamePrefix) {
-    filters.push({namePrefix: filterNamePrefix});
-  }
-
-  log('Requesting Bluetooth Device...');
-  navigator.bluetooth.requestDevice({filters: filters})
-  .then(device => {
-    log('> Name:             ' + device.name);
-    log('> Id:               ' + device.id);
-    log('> Allowed Services: ' + device.uuids.join('\n' + ' '.repeat(20)));
-    log('> Connected:        ' + device.gatt.connected);
-  })
-  .catch(error => {
-    log('Argh! ' + error);
-  });
-}
 
 }
 
