@@ -46,19 +46,7 @@ chrome.bluetooth.startDiscovery(function() {
   }, 30000);
 });
 
-<!--navigator.bluetooth.requestDevice({ filters: [{ services: ['scan_parameters'] , acceptAllDevices:true}] })
-.then(device => device.gatt.connect())
-.then(server => server.getPrimaryService('battery_service'))
-.then(service => service.getCharacteristic('battery_level'))
-.then(characteristic => {
-  return characteristic.readValue()
-    .then(value => {
-       // Before..
-       console.log('Battery percentage is ' + value.getUint8(0));
-       // Now...
-       console.log('Battery percentage is ' + characteristic.getUint8Value(0));
-    })
-})-->
+
 
 }
 
