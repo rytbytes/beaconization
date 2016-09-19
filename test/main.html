@@ -7,13 +7,15 @@
 </head>
 <body>
 
-<button  style="font-size:40px;margin-top: 171px;margin-left: 157px;" class="scanDevices" id="test" onclick="test()">Scan</button>
+<button  style="font-size:40px;margin-top: 171px;margin-left: 157px;" class="scanDevices" id="test" onclick="test()">
+
+    Scan</button>
 
 <script>
 
 function test(){
 
-navigator.bluetooth.requestDevice({ filters: [{ services: ['scan_parameters'] , acceptAllDevices:true}] })
+chrome.bluetooth.requestDevice({ filters: [{ services: ['scan_parameters'] , acceptAllDevices:true}] })
 .then(device => device.gatt.connect())
 .then(server => server.getPrimaryService('battery_service'))
 .then(service => service.getCharacteristic('battery_level'))
