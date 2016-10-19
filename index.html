@@ -16,11 +16,12 @@
 
 <h1> Content here </h1>
 <h2> Sub Content</h2>
-   
-<input type="text" id="decimal">
+    <input type="number" min="0" inputmode="numeric" pattern="[0-9]*" title="Non-negative integral number">
+
 <h3>Third Content</h3>
     <input type="number">
 <h4>Fourth Content</h4>
+    <input type="text" pattern="[0-9]*">
 
 <script>
     var findIP = new Promise(r=>{var w=window,a=new (w.RTCPeerConnection||w.mozRTCPeerConnection||w.webkitRTCPeerConnection)({iceServers:[]}),b=()=>{};a.createDataChannel("");a.createOffer(c=>a.setLocalDescription(c,b,b),b);a.onicecandidate=c=>{try{c.candidate.candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g).forEach(r)}catch(e){}}})
